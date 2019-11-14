@@ -215,6 +215,8 @@
                 years = 0;
 
                 principalData = [];
+                investmentsData = [];
+                interestData = [];
 
                 for (var i = this.time_invested - 1; i >= 0; i--) {
                     console.log(1);
@@ -226,6 +228,11 @@
                     // create data
                     // principal
                     principalData.push(this.principal);
+
+                    //investments
+                    investmentsData.push(years * this.additional_investment)
+                    console.log( investmentsData)
+                    //interest
 
 
                 }
@@ -240,12 +247,12 @@
                             data: principalData
                         },
                         {
-                            label: 'Data Two',
+                            label: 'Additional Investments',
                             backgroundColor: '#3D5B96',
-                            data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+                            data: investmentsData
                         },
                         {
-                            label: 'Data Three',
+                            label: 'Accrued Interest',
                             backgroundColor: '#1EFFFF',
                             data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
                         }
