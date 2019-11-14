@@ -10,11 +10,15 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     <!-- Bulma Version 0.8.x-->
     <link rel="stylesheet" href="https://unpkg.com/bulma@0.8.0/css/bulma.min.css" />
-    <link rel="stylesheet" type="text/css" href="../css/admin.css">
     <!-- https://vue-chartjs.org/guide/#npm -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
     <script src="https://unpkg.com/vue-chartjs@3.4.0/dist/vue-chartjs.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
+<!-- Stacked Bar chart -->
+<!-- https://codepen.io/VCyan/pen/rvObZR -->
+<!-- Ractive Bar chart -->
+<!-- https://codepen.io/SitePoint/pen/dzoNxr -->
 
 <body>
     <div id="app">
@@ -31,7 +35,7 @@
                                     Compound Interest Calculator
                                 </h1>
                                 <h2 class="subtitle">
-                                    Become the next Buffet!
+                                    Be the best Buffet you can be!
                                 </h2>
                             </div>
                         </div>
@@ -115,7 +119,8 @@
                                                 </tr>
                                                 <tr>
                                                     <td width="50%">Interest Rate</td>
-                                                    <td width="50%"><input class="input" v-model="interest_rate" type="text" placeholder="Small input"></td>
+                                                    <td width="50%">
+                                                        <input class="input" v-model="interest_rate" type="text" placeholder="Small input"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -123,11 +128,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="column is-6">
+                        <div class="column is-6 charttest">
                             <div class="card">
                                 <div class="card-content">
                                     <div class="content">
-                                        <line-chart></line-chart>
+                                        <reactive :chart-data="datacollection"></reactive>
+                                        <button class="button is-primary" @click="fillData()">Generate Graph</button>
                                     </div>
                                 </div>
                             </div>
@@ -136,168 +142,14 @@
                 </div>
             </div>
         </div>
-        <script async type="text/javascript" src="../js/bulma.js"></script>
-        <!-- development version, includes helpful console warnings -->
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <!-- production version, optimized for size and speed -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
-
-        <script type="text/javascript">
-
-
-        //https://www.sitepoint.com/creating-beautiful-charts-vue-chart-js/
-        // https://codepen.io/SitePoint/pen/dzoNxr
-        Vue.component('reactive', {
-            extends: VueChartJs.Bar,
-            mixins: [VueChartJs.mixins.reactiveProp],
-            data: function() {
-                return {
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                                gridLines: {
-                                    display: true
-                                }
-                            }],
-                            xAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                                gridLines: {
-                                    display: false
-                                }
-                            }]
-                        },
-                        legend: {
-                            display: false
-                        },
-                        tooltips: {
-                            enabled: true,
-                            mode: 'single',
-                            callbacks: {
-                                label: function(tooltipItems, data) {
-                                    return '$' + tooltipItems.yLabel;
-                                }
-                            }
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        height: 200
-                    }
-                }
-            },
-            mounted() {
-                // this.chartData is created in the mixin
-                this.renderChart(this.chartData, this.options)
-            }
-        })
-
-        var vm = new Vue({
-            el: '.app',
-            data() {
-                return {
-                    datacollection: null
-                }
-            },
-            created() {
-                this.fillData()
-            },
-            methods: {
-                fillData() {
-                    this.datacollection = {
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                        datasets: [{
-                            label: 'Data One',
-                            backgroundColor: '#f87979',
-                            data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
-                        }]
-                    }
-                },
-                getRandomInt() {
-                    return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-                }
-            }
-        })
-
-
-        const horizonalLinePlugin = {
-            id: 'horizontalLine',
-            afterDraw: function(chartInstance) {
-
-                var yValue;
-                var yScale = chartInstance.scales["y-axis-0"];
-                var canvas = chartInstance.chart;
-                var ctx = canvas.ctx;
-                var index;
-                var line;
-                var style;
-
-                if (chartInstance.options.horizontalLine) {
-
-                    for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
-                        line = chartInstance.options.horizontalLine[index];
-
-                        if (!line.style) {
-                            style = "#080808";
-                        } else {
-                            style = line.style;
-                        }
-
-                        if (line.y) {
-                            yValue = yScale.getPixelForValue(line.y);
-                        } else {
-                            yValue = 0;
-                        }
-                        ctx.lineWidth = 3;
-
-                        if (yValue) {
-                            window.chart = chartInstance;
-                            ctx.beginPath();
-                            ctx.moveTo(0, yValue);
-                            ctx.lineTo(canvas.width, yValue);
-                            ctx.strokeStyle = style;
-                            ctx.stroke();
-                        }
-
-                        if (line.text) {
-                            ctx.fillStyle = style;
-                            ctx.fillText(line.text, 0, yValue + ctx.lineWidth);
-                        }
-                    }
-                    return;
-                }
-            }
-        }
-
-        Vue.component('line-chart', {
-            extends: VueChartJs.Bar,
-            mixins: [VueChartJs.mixins.reactiveProp],
-            beforeMount() {
-                this.addPlugin(horizonalLinePlugin)
-            },
-            mounted() {
-                this.renderChart({
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                    datasets: [{
-                            label: 'Principal',
-                            backgroundColor: '#3298dc',
-                            data: [this.principal, 39, 10, 40, 39, 80, 40]
-                        },
-                        {
-                            label: 'Additional Investments',
-                            backgroundColor: '#3D5B96',
-                            data: [40, 39, 10, 40, 39, 80, 40]
-                        },
-                        {
-                            label: 'Total Interest',
-                            backgroundColor: '#48c774',
-                            data: [20, 10, 12, 33, 22, 4, 0]
-                        }
-                    ]
-                }, {
+    </div>
+    <script type="text/javascript">
+    Vue.component('reactive', {
+        extends: VueChartJs.Bar,
+        mixins: [VueChartJs.mixins.reactiveProp],
+        data: function() {
+            return {
+                options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
@@ -310,15 +162,21 @@
                             stacked: true
                         }]
                     }
-                })
+                }
             }
+        },
+        mounted() {
+            // this.chartData is created in the mixin
+            this.renderChart(this.chartData, this.options)
 
-        })
+        }
+    })
 
-
-        var app = new Vue({
-            el: '#app',
-            data: {
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                datacollection: null,
                 principal: 10000,
                 interest_rate: 9,
                 time_invested: 5,
@@ -340,55 +198,88 @@
                         "12": "Monthly"
                     }
                 }
-            },
-            methods: {},
-            computed: {
-                total_pay_periods: function() {
-                    // calculate total number of pay periods
-                    total_pay_periods = parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
-                    return parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
-                },
-                total_additional_investment: function() {
-                    // calculate total number of pay periods
-                    total_pay_periods = parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
-                    // times total pay periods by additional investment installment amount to get overall total additional investment
-                    return parseFloat(this.additional_investment) * total_pay_periods;
-                },
-                rate: function() {
-                    ir = parseFloat(this.interest_rate) / 100;
-                    cf = parseFloat(this.compound_frequency);
-                    aif = parseFloat(this.additional_investment_frequency);
-                    return (Math.pow((1 + ir / cf), (cf / aif)) - 1);
-                    // return (((1+ir/cf)^(cf/aif))-1);
-                },
-                future_value: function() {
-                    // based on:
-                    // F = P*(1+rate)^nper + A*( ((1+rate)^nper - 1)/rate )
-                    // https://www.vertex42.com/Calculators/compound-interest-calculator.html#rate-per-period
-
-                    p = parseFloat(this.principal);
-                    r = parseFloat(this.rate);
-                    tpp = parseFloat(this.total_pay_periods);
-                    ai = parseFloat(this.additional_investment);
-
-                    // calculate final future value
-                    v = ((p * (Math.pow((1 + r), tpp))) + (ai * (Math.pow((1 + r), tpp) - 1) / r));
-                    // convert to 2 decimal places
-                    return v.toFixed(2);
-                },
-                total_interest: function() {
-                    fv = parseFloat(this.future_value);
-                    p = parseFloat(this.principal);
-                    tai = parseFloat(this.total_additional_investment);
-                    // calcualte total interest
-                    ti = ((fv - p) - tai);
-                    // convert to 2 decimal places
-                    return ti.toFixed(2);
-                }
             }
-        })
-        </script>
-    </div>
+        },
+        created() {
+            this.fillData()
+        },
+        methods: {
+            fillData() {
+                this.datacollection = {
+                    labels: ['1 Year', '2 Years', '3 Years'],
+                    datasets: [{
+                            label: 'Data One',
+                            backgroundColor: '#f87979',
+                            data: [this.rollinAiraid(), this.getRandomInt(), this.getRandomInt()]
+                        },
+                        {
+                            label: 'Data Two',
+                            backgroundColor: '#3D5B96',
+                            data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+                        },
+                        {
+                            label: 'Data Three',
+                            backgroundColor: '#1EFFFF',
+                            data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+                        }
+                    ]
+                }
+
+            },
+            getRandomInt() {
+                return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+            },
+            rollinAiraid() {
+                p = parseFloat(this.principal);
+                return (p)
+            }
+        },
+        computed: {
+            total_pay_periods: function() {
+                // calculate total number of pay periods
+                total_pay_periods = parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
+                return parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
+            },
+            total_additional_investment: function() {
+                // calculate total number of pay periods
+                total_pay_periods = parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
+                // times total pay periods by additional investment installment amount to get overall total additional investment
+                return parseFloat(this.additional_investment) * total_pay_periods;
+            },
+            rate: function() {
+                ir = parseFloat(this.interest_rate) / 100;
+                cf = parseFloat(this.compound_frequency);
+                aif = parseFloat(this.additional_investment_frequency);
+                return (Math.pow((1 + ir / cf), (cf / aif)) - 1);
+                // return (((1+ir/cf)^(cf/aif))-1);
+            },
+            future_value: function() {
+                // based on:
+                // F = P*(1+rate)^nper + A*( ((1+rate)^nper - 1)/rate )
+                // https://www.vertex42.com/Calculators/compound-interest-calculator.html#rate-per-period
+
+                p = parseFloat(this.principal);
+                r = parseFloat(this.rate);
+                tpp = parseFloat(this.total_pay_periods);
+                ai = parseFloat(this.additional_investment);
+
+                // calculate final future value
+                v = ((p * (Math.pow((1 + r), tpp))) + (ai * (Math.pow((1 + r), tpp) - 1) / r));
+                // convert to 2 decimal places
+                return v.toFixed(2);
+            },
+            total_interest: function() {
+                fv = parseFloat(this.future_value);
+                p = parseFloat(this.principal);
+                tai = parseFloat(this.total_additional_investment);
+                // calcualte total interest
+                ti = ((fv - p) - tai);
+                // convert to 2 decimal places
+                return ti.toFixed(2);
+            }
+        }
+    })
+    </script>
 </body>
 
 </html>
