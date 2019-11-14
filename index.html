@@ -213,10 +213,21 @@
                 cols = [];
                 // years for columns
                 years = 0;
+
+                principalData = [];
+
                 for (var i = this.time_invested - 1; i >= 0; i--) {
                     console.log(1);
+
+                    // create labels
                     years = years+1;
-                    cols.push(years + ' Years')                     
+                    cols.push(years + ' Years')
+
+                    // create data
+                    // principal
+                    principalData.push(this.principal);
+
+
                 }
 
                 
@@ -226,7 +237,7 @@
                     datasets: [{
                             label: 'Principal',
                             backgroundColor: '#f87979',
-                            data: [this.principal, this.principal, this.principal]
+                            data: principalData
                         },
                         {
                             label: 'Data Two',
