@@ -230,8 +230,8 @@
                     principalData.push(this.principal);
 
                     //investments
-                    investmentsData.push(years * this.additional_investment)
-                    console.log( investmentsData)
+                    investmentsData.push(years * this.additional_investment * this.additional_investment_frequency)
+
                     //interest
 
 
@@ -263,10 +263,6 @@
             },
             getRandomInt() {
                 return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-            },
-            rollinAiraid() {
-                p = parseFloat(this.principal);
-                return (p)
             }
         },
         computed: {
@@ -307,7 +303,7 @@
                 fv = parseFloat(this.future_value);
                 p = parseFloat(this.principal);
                 tai = parseFloat(this.total_additional_investment);
-                // calcualte total interest
+                // calculate total interest
                 ti = ((fv - p) - tai);
                 // convert to 2 decimal places
                 return ti.toFixed(2);
