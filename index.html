@@ -219,10 +219,9 @@
                 interestData = [];
 
                 for (var i = this.time_invested - 1; i >= 0; i--) {
-                    console.log(1);
 
                     // create labels
-                    years = years+1;
+                    years = years + 1;
                     cols.push(years + ' Years')
 
                     // create data
@@ -233,11 +232,11 @@
                     investmentsData.push(years * this.additional_investment * this.additional_investment_frequency)
 
                     //interest
+                    interestData.push(this.yearlyInterest(years))
 
 
                 }
 
-                
 
                 this.datacollection = {
                     labels: cols,
@@ -254,28 +253,58 @@
                         {
                             label: 'Accrued Interest',
                             backgroundColor: '#1EFFFF',
-                            data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+                            data: interestData
                         }
                     ]
                 }
-                console.log(this.datacollection);
 
             },
             getRandomInt() {
                 return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+            },
+            yearlyInterest(years) {
+                // This is basically copying the code in computed so that interest data can be generated across the graph but apparently you cannot pass values into computed properties. This should be refactored later!
+
+                // tpp - total_pay_periods
+
+                tpp = parseFloat(this.additional_investment_frequency) * (years);
+
+                // tai - total_additional_investment
+
+                tai = parseFloat(this.additional_investment) * tpp;
+
+                // r - rate
+
+                ir = parseFloat(this.interest_rate) / 100;
+                cf = parseFloat(this.compound_frequency);
+                aif = parseFloat(this.additional_investment_frequency);
+
+                r = (Math.pow((1 + ir / cf), (cf / aif)) - 1);
+
+                // fv - future_value
+
+                p = parseFloat(this.principal);
+                ai = parseFloat(this.additional_investment);
+
+                v = ((p * (Math.pow((1 + r), tpp))) + (ai * (Math.pow((1 + r), tpp) - 1) / r));
+                fv = v.toFixed(2);
+
+                // ti - total_interest
+
+                t = ((fv - p) - tai);
+                ti = t.toFixed(2);
+                return ti
+
             }
         },
         computed: {
             total_pay_periods: function() {
                 // calculate total number of pay periods
-                total_pay_periods = parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
                 return parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
             },
             total_additional_investment: function() {
-                // calculate total number of pay periods
-                total_pay_periods = parseFloat(this.additional_investment_frequency) * parseFloat(this.time_invested);
                 // times total pay periods by additional investment installment amount to get overall total additional investment
-                return parseFloat(this.additional_investment) * total_pay_periods;
+                return parseFloat(this.additional_investment) * this.total_pay_periods;
             },
             rate: function() {
                 ir = parseFloat(this.interest_rate) / 100;
