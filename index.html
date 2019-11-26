@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Compound Interest</title>
+    <title>Compound Interest Calculator*</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     <!-- Bulma Version 0.8.x-->
@@ -32,10 +32,10 @@
                         <div class="hero-body">
                             <div class="container">
                                 <h1 class="title">
-                                    Compound Interest Calculator
+                                    Compound Interest Calculator*
                                 </h1>
                                 <h2 class="subtitle">
-                                    Be the best Buffet you can be!
+                                    Be the best Buffet you can be! Made with Vue.JS, CSS Bulma & Chart.JS
                                 </h2>
                             </div>
                         </div>
@@ -122,6 +122,15 @@
                                                     <td width="50%">
                                                         <input class="input" v-model="interest_rate" type="text" placeholder="Small input"></td>
                                                 </tr>
+                                                <tr>
+                                                    <td colspan="2" style="width:100%">
+                                                        <p class="is-italic" style="font-size:0.6em">
+                                                            <strong>*Disclaimer:</strong>
+                                                            The calculators and tools on this website are provided for your information and to illustrate scenarios. The results should not be taken as a substitute for professional advice.</br></br>
+                                                            The website owner is not liable for any loss caused, whether due to negligence or otherwise arising from the use of, or reliance on, the information provided directly or indirectly, by use of this website.
+                                                        </p>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -131,9 +140,9 @@
                         <div class="column is-6 charttest">
                             <div class="card">
                                 <div class="card-content">
-                                    <div class="content">
+                                    <div class="content has-text-centered">
                                         <reactive :chart-data="datacollection"></reactive>
-                                        <button class="button is-primary" @click="fillData()">Generate Graph</button>
+                                        <button class="button " @click="fillData()">Generate Graph</button>
                                     </div>
                                 </div>
                             </div>
@@ -242,17 +251,17 @@
                     labels: cols,
                     datasets: [{
                             label: 'Principal',
-                            backgroundColor: '#f87979',
+                            backgroundColor: '##363636',
                             data: principalData
                         },
                         {
                             label: 'Additional Investments',
-                            backgroundColor: '#3D5B96',
+                            backgroundColor: '#3298dc',
                             data: investmentsData
                         },
                         {
                             label: 'Accrued Interest',
-                            backgroundColor: '#1EFFFF',
+                            backgroundColor: '#48c774',
                             data: interestData
                         }
                     ]
